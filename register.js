@@ -25,24 +25,35 @@ function registerCallback(regId) {
     setStatus("Push Registration failed: " + chrome.runtime.lastError.message);
     return;
   }
-  document.getElementById("login").style.visibility = "hidden";
-  document.getElementById("login").style.height = "0";
-  setStatus("Push Registration succeeded.");
+
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4) {
+    //var resp = eval("(" + xhr.responseText + ")");
+    var xhr2 = new XMLHttpRequest();
+    xhr2.onreadystatechange = function() {
+      if (xhr.readyState == 4) {
+        //var resp = eval("(" + xhr.responseText + ")");
+        document.getElementById("list").innerHTML = xhr2.responseText;
+        console.log(xhr2.responseText);
+      }
+      
+    }
+    xhr2.open("GET", "http://www.oxiane.com/google-push/list.php", true);
+    xhr2.send();
+  }
+  
+}
+xhr.open("GET", "http://www.oxiane.com/google-push/register.php?id="+registrationId+"&nom="+document.getElementById("senderId").value, true);
+xhr.send();
+document.getElementById("login").style.visibility = "hidden";
+document.getElementById("login").style.height = "0";
+setStatus("Push Registration succeeded.");
 
   // Mark that the first-time registration is done.
   chrome.storage.local.set({registered: true});
 
-var xhr = new XMLHttpRequest();
-xhr.onreadystatechange = function() {
-  if (xhr.readyState == 4) {
-    //var resp = eval("(" + xhr.responseText + ")");
-    document.getElementById("list").innerHTML = xhr.responseText;
-    console.log(xhr.responseText);
-  }
-  
-}
-xhr.open("GET", "http://www.oxiane.com/google-push/list.php", true);
-xhr.send();
+
   // Format and show the curl command that can be used to post a message.
   
 }
@@ -62,11 +73,11 @@ function updateCurlCommand() {
     msgValue = "YOUR_MESSAGE_VALUE";
 
   var command = 'curl' +
-      ' -H "Content-Type:application/x-www-form-urlencoded;charset=UTF-8"' +
-      ' -H "Authorization: key=' + apiKey + '"' +
-      ' -d "registration_id=' + registrationId + '"' +
-      ' -d data.' + msgKey + '=' + msgValue +
-      ' https://android.googleapis.com/gcm/send';
+  ' -H "Content-Type:application/x-www-form-urlencoded;charset=UTF-8"' +
+  ' -H "Authorization: key=' + apiKey + '"' +
+  ' -d "registration_id=' + registrationId + '"' +
+  ' -d data.' + msgKey + '=' + msgValue +
+  ' https://android.googleapis.com/gcm/send';
   document.getElementById("console").innerText = command;
 }
 
