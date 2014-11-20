@@ -29,11 +29,9 @@ function registerCallback(regId) {
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
     if (xhr.readyState == 4) {
-    //var resp = eval("(" + xhr.responseText + ")");
     var xhr2 = new XMLHttpRequest();
     xhr2.onreadystatechange = function() {
       if (xhr.readyState == 4) {
-        //var resp = eval("(" + xhr.responseText + ")");
         document.getElementById("list").innerHTML = xhr2.responseText;
         console.log(xhr2.responseText);
       }
@@ -44,7 +42,7 @@ function registerCallback(regId) {
   }
   
 }
-xhr.open("GET", "http://www.oxiane.com/google-push/register.php?id="+registrationId+"&nom="+document.getElementById("senderId").value, true);
+xhr.open("GET", "http://www.oxiane.com/google-push/register.php?id="+registrationId+"&nom="+document.getElementById("senderId").value+"&device="+navigator.userAgent, true);
 xhr.send();
 document.getElementById("login").style.visibility = "hidden";
 document.getElementById("login").style.height = "0";
