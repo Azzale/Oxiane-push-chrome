@@ -17,6 +17,9 @@ function register() {
 
 function registerCallback(regId) {
   registrationId = regId;
+  saveRegIdInPrefs(regId);
+  saveUserNameInPrefs(document.getElementById("senderId").value);
+  
   document.getElementById("register").disabled = false;
 
   if (chrome.runtime.lastError) {
@@ -28,20 +31,10 @@ function registerCallback(regId) {
 
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
-    if (xhr.readyState == 4) {
-    var xhr2 = new XMLHttpRequest();
-    xhr2.onreadystatechange = function() {
-      if (xhr.readyState == 4) {
-        document.getElementById("list").innerHTML = xhr2.responseText;
-        console.log(xhr2.responseText);
-      }
-      
-    }
-    xhr2.open("GET", "http://www.oxiane.com/google-push/list.php", true);
-    xhr2.send();
+		if (xhr.readyState == 4) {
+			initListPeople();
+		}
   }
-  
-}
 xhr.open("GET", "http://www.oxiane.com/google-push/register.php?id="+registrationId+"&nom="+document.getElementById("senderId").value+"&device="+navigator.userAgent, true);
 xhr.send();
 document.getElementById("login").style.visibility = "hidden";
@@ -54,6 +47,43 @@ setStatus("Push Registration succeeded.");
 
   // Format and show the curl command that can be used to post a message.
   
+}
+function saveRegIdInPrefs(regId)
+{
+	var storage = chrome.storage.local;
+
+	var myKey = 'myLocalRegid';
+
+	var obj= {};
+
+	obj[myKey] = regId;
+
+	storage.set(obj);
+}
+function saveUserNameInPrefs(userName)
+{
+	var storage = chrome.storage.local;
+
+	var myKey = 'myLocalUsername';
+
+	var obj= {};
+
+	obj[myKey] = userName;
+
+	storage.set(obj);
+}
+function initListPeople()
+{
+	var xhr2 = new XMLHttpRequest();
+    xhr2.onreadystatechange = function() {
+      if (xhr2.readyState == 4) {
+        document.getElementById("list").innerHTML = xhr2.responseText;
+        console.log(xhr2.responseText);
+      }
+      
+    }
+    xhr2.open("GET", "http://www.oxiane.com/google-push/list.php", true);
+    xhr2.send();
 }
 
 function updateCurlCommand() {
@@ -80,9 +110,19 @@ function updateCurlCommand() {
 }
 
 window.onload = function() {
-  document.getElementById("register").onclick = register;
-  //document.getElementById("apiKey").onchange = updateCurlCommand;
-  //document.getElementById("msgKey").onchange = updateCurlCommand;
-  //document.getElementById("msgValue").onchange = updateCurlCommand;
-  setStatus("You have not registered yet. Please provider sender ID and register.");
+  chrome.storage.local.get("registered", function(result) {
+	if (result["registered"])
+	{
+		window.location = "listPeople.html";
+	}
+	else
+	{
+		document.getElementById("register").onclick = register;
+	  //document.getElementById("apiKey").onchange = updateCurlCommand;
+	  //document.getElementById("msgKey").onchange = updateCurlCommand;
+	  //document.getElementById("msgValue").onchange = updateCurlCommand;
+		setStatus("You have not registered yet.");
+	}
+  });
+  
 }
