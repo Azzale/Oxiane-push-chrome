@@ -52,7 +52,7 @@ function saveRegIdInPrefs(regId)
 {
 	var storage = chrome.storage.local;
 
-	var myKey = 'myLocalRegid';
+	var myKey = 'registrationId';
 
 	var obj= {};
 

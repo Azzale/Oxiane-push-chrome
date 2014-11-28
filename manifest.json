@@ -2,12 +2,12 @@
   "name": "GCM Notifications",
   "description": "Chrome platform app.",
   "manifest_version": 2,
-  "version": "0.2",
+  "version": "0.3",
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "background": {
       "scripts": ["background.js"]
     },
-  "permissions": ["gcm", "storage", "notifications", "http://www.oxiane.com/*"],
+  "permissions": ["gcm", "storage", "notifications", "http://www.oxiane.com/*", "http://*.oxiane.com/*"],
   "icons": { "128": "logo_ox_push.png" },
   "browser_action": {
     "default_icon": "logo_ox_push.png",
